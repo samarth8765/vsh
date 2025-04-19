@@ -170,11 +170,11 @@ string takeInput(const string &prompt)
 
 void shell()
 {
-    cout << "Welcome to our SD SHELL" << endl;
+    cout << "Welcome to our Vizz SHELL" << endl;
 
     while (true)
     {
-        string input = takeInput("➜  sd_shell ");
+        string input = takeInput("➜  vsh ");
         vector<string> arr = parseUserInput(input);
         executeCommnad(arr);
     }
