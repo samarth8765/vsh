@@ -22,6 +22,11 @@ void executeClear()
     cout << "\033[H\033[J";
 }
 
+void executeSource()
+{
+    loadAliases();
+}
+
 vector<string> parseUserInput(string s)
 {
     vector<string> inputs;
@@ -89,6 +94,10 @@ void executeCommnad(vector<string> input)
     else if (command == "pwd")
     {
         executePWD();
+    }
+    else if (command == "source")
+    {
+        executeSource();
     }
     else if (aliasMap.find(command) != aliasMap.end())
     {
