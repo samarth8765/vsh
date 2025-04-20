@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
 
 # Sources
-SRCS = main.cpp src/shell.cpp src/terminal.cpp
+SRCS = main.cpp src/shell.cpp src/terminal.cpp src/alias.cpp
 
 # Object files (auto .cpp to .o)
 OBJS = $(SRCS:.cpp=.o)

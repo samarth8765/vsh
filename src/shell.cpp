@@ -1,5 +1,6 @@
 #include "../include/shell.hpp"
 #include "../include/terminal.hpp"
+#include "../include/alias.hpp"
 
 void executePWD()
 {
@@ -36,7 +37,6 @@ vector<string> parseUserInput(string s)
 void runExternalCommand(vector<string> input)
 {
     pid_t pid = fork();
-    signal(SIGINT, SIG_IGN);
 
     if (pid == 0)
     {
@@ -58,7 +58,6 @@ void runExternalCommand(vector<string> input)
     {
         int status;
         waitpid(pid, &status, 0);
-        signal(SIGINT, SIG_DFL);
     }
     else
     {
@@ -91,6 +90,10 @@ void executeCommnad(vector<string> input)
     {
         executePWD();
     }
+    else if (aliasMap.find(command) != aliasMap.end())
+    {
+        executeCommnad(parseUserInput(aliasMap[command]));
+    }
     else
     {
         runExternalCommand(input);
@@ -101,7 +104,7 @@ string takeInput(const string &prompt)
 {
     enableRawMode();
     string buffer;
-    int cursor = 0;
+    size_t cursor = 0;
 
     char c;
     cout << prompt << flush;
@@ -144,6 +147,14 @@ string takeInput(const string &prompt)
                     }
                 }
             }
+            else if (c == 4)
+            {
+                if (buffer.size() == 0)
+                {
+                    cout << endl;
+                    exit(EXIT_SUCCESS);
+                }
+            }
             else
             {
                 buffer.insert(buffer.begin() + cursor, c);
@@ -168,14 +179,24 @@ string takeInput(const string &prompt)
     return buffer;
 }
 
+void sigint_handler(int sig)
+{
+    cout << "Signal Recieved" << sig << endl;
+}
+
 void shell()
 {
     cout << "Welcome to our Vizz SHELL" << endl;
+    signal(SIGINT, sigint_handler);
+    loadAliases();
 
     while (true)
     {
         string input = takeInput("➜  vsh ");
-        vector<string> arr = parseUserInput(input);
-        executeCommnad(arr);
+        if (input.size() > 0)
+        {
+            vector<string> arr = parseUserInput(input);
+            executeCommnad(arr);
+        }
     }
 }
